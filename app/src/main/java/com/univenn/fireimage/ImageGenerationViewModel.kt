@@ -15,6 +15,8 @@ class ImageGenerationViewModel: ViewModel() {
     val prompt: StateFlow<String> = _prompt
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
+    private val _isEditing = MutableStateFlow(false)
+    val isEditing: StateFlow<Boolean> = _isEditing
 
     fun generateImage() {
         val prompt = _prompt.value
@@ -29,6 +31,15 @@ class ImageGenerationViewModel: ViewModel() {
         _prompt.value = newPrompt
     }
 
+    fun toggleEditMode() {
+        _isEditing.value = !_isEditing.value
+        resetPrompt()
+    }
+
+    private fun resetPrompt() {
+        _prompt.value = ""
+    }
+
     fun editImage() {
         val bitmap = _bitmap.value ?: return
         val prompt = _prompt.value
@@ -36,6 +47,7 @@ class ImageGenerationViewModel: ViewModel() {
             _isLoading.value = true
             _bitmap.value = editImage(prompt, bitmap)
             _isLoading.value = false
+            resetPrompt()
         }
     }
 }

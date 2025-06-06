@@ -3,17 +3,22 @@ package com.univenn.fireimage
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,7 +29,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.layout.ContentScale
 
 @Composable
 fun CreateScreen(
@@ -32,8 +36,10 @@ fun CreateScreen(
     image: Bitmap?,
     onPromptChange: (String) -> Unit,
     onSend: () -> Unit,
-    modifier : Modifier = Modifier,
-    isLoading: Boolean = false
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    isEditing: Boolean = false,
+    onEditClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -77,6 +83,37 @@ fun CreateScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
+                
+                // Edit Button
+                Box(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .align(Alignment.TopEnd)
+                ) {
+                    IconButton(
+                        onClick = onEditClick,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(Color(0xFF1A1A1A).copy(alpha = 0.7f), CircleShape)
+                            .then(
+                                if (isEditing) {
+                                    Modifier.border(
+                                        width = 2.dp,
+                                        color = Color(0xFF0088FF),
+                                        shape = CircleShape
+                                    )
+                                } else {
+                                    Modifier
+                                }
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit image",
+                            tint = if (isEditing) Color(0xFF0088FF) else Color.White
+                        )
+                    }
+                }
             }
 
             if (isLoading) {
@@ -145,9 +182,11 @@ fun CreateScreenPreview() {
         CreateScreen(
             prompt = "Sample prompt",
             image = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888),
-            isLoading = true,
             onPromptChange = {},
             onSend = {},
+            isLoading = false,
+            isEditing = true,
+            onEditClick = {}
         )
     }
 }

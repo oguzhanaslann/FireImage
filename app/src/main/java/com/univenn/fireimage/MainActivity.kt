@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.univenn.fireimage.ui.theme.FireImageTheme
@@ -42,14 +44,23 @@ fun ImageGenerationScreen(
     val prompt by viewModel.prompt.collectAsStateWithLifecycle()
     val bitmap by viewModel.bitmap.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+    val isEditing by viewModel.isEditing.collectAsStateWithLifecycle()
 
     CreateScreen(
         modifier = modifier,
         prompt = prompt,
         image = bitmap,
         isLoading = isLoading,
+        isEditing = isEditing,
         onPromptChange = { viewModel.setPrompt(it) },
-        onSend = { viewModel.generateImage() }
+        onSend = { 
+            if (isEditing) {
+                viewModel.editImage()
+            } else {
+                viewModel.generateImage()
+            }
+        },
+        onEditClick = { viewModel.toggleEditMode() }
     )
 }
 
