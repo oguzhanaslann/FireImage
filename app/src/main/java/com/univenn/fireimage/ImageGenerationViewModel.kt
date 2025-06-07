@@ -1,8 +1,13 @@
 package com.univenn.fireimage
 
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.content.Context
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,6 +22,17 @@ class ImageGenerationViewModel: ViewModel() {
     val isLoading: StateFlow<Boolean> = _isLoading
     private val _isEditing = MutableStateFlow(false)
     val isEditing: StateFlow<Boolean> = _isEditing
+
+    // Add context property
+    private var context: Context? = null
+
+    fun setContext(context: Context) {
+        this.context = context
+    }
+
+    fun handleSelectedImage(bitmap: Bitmap) {
+        _bitmap.value = bitmap
+    }
 
     fun generateImage() {
         val prompt = _prompt.value
