@@ -23,13 +23,6 @@ class ImageGenerationViewModel: ViewModel() {
     private val _isEditing = MutableStateFlow(false)
     val isEditing: StateFlow<Boolean> = _isEditing
 
-    // Add context property
-    private var context: Context? = null
-
-    fun setContext(context: Context) {
-        this.context = context
-    }
-
     fun handleSelectedImage(bitmap: Bitmap) {
         _bitmap.value = bitmap
     }

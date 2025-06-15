@@ -58,14 +58,16 @@ fun CreateScreen(
     isLoading: Boolean = false,
     isEditing: Boolean = false,
     onEditClick: () -> Unit = {},
-    onAddPhotoClicked: () -> Unit = {}
+    onAddPhotoClicked: () -> Unit = {},
+    onChatClicked: () -> Unit = {}
 ) {
     Scaffold(
         contentColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopBar(
                 canAddPhoto = image != null,
-                onAddPhotoClicked = onAddPhotoClicked
+                onAddPhotoClicked = onAddPhotoClicked,
+                onChatClicked = onChatClicked
             )
         }
     ) { paddingValues ->
@@ -94,6 +96,7 @@ fun CreateScreen(
 private fun TopBar(
     canAddPhoto: Boolean,
     onAddPhotoClicked: () -> Unit,
+    onChatClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -110,7 +113,7 @@ private fun TopBar(
             }
 
            IconButton(
-               onClick = {}
+               onClick = onChatClicked
            ) {
                Icon(
                    painter = painterResource(R.drawable.baseline_chat_bubble_outline_24),

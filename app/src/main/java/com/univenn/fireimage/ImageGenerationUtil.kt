@@ -2,6 +2,7 @@ package com.univenn.fireimage
 
 import android.graphics.Bitmap
 import com.google.firebase.Firebase
+import com.google.firebase.ai.GenerativeModel
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.GenerativeBackend
 import com.google.firebase.ai.type.ImagePart
@@ -20,16 +21,10 @@ suspend fun predict(prompt: String): String? {
     return response.text
 }
 
-suspend fun geminiImageGen(prompt: String): Bitmap {
-
-    val model = Firebase.ai(backend = GenerativeBackend.googleAI()).generativeModel(
-        modelName = "gemini-2.0-flash-preview-image-generation",
-        // Configure the model to respond with text and images
-        generationConfig = generationConfig {
-            responseModalities = listOf(ResponseModality.TEXT, ResponseModality.IMAGE)
-        }
-    )
-
+suspend fun geminiImageGen(
+    prompt: String,
+    model: GenerativeModel = generatorModel()
+): Bitmap {
     val generatedImageAsBitmap = model.generateContent(prompt)
         .candidates
         .first()
@@ -40,17 +35,23 @@ suspend fun geminiImageGen(prompt: String): Bitmap {
     return generatedImageAsBitmap
 }
 
-suspend fun geminiImageGenAndText(prompt: String): Pair<Bitmap?, String?> {
+fun generatorModel(): GenerativeModel = Firebase.ai(backend = GenerativeBackend.googleAI()).generativeModel(
+    modelName = "gemini-2.0-flash-preview-image-generation",
+    // Configure the model to respond with text and images
+    generationConfig = generationConfig {
+        responseModalities = listOf(ResponseModality.TEXT, ResponseModality.IMAGE)
+    }
+)
 
-    val model = Firebase.ai(backend = GenerativeBackend.googleAI()).generativeModel(
-        modelName = "gemini-2.0-flash-preview-image-generation",
-        // Configure the model to respond with text and images
-        generationConfig = generationConfig {
-            responseModalities = listOf(ResponseModality.TEXT, ResponseModality.IMAGE)
-        }
-    )
+suspend fun geminiImageGenAndText(
+    prompt: String,
+    model: GenerativeModel = generatorModel()
+): Pair<Bitmap?, String?> {
 
-    val responseContent = model.generateContent(prompt).candidates.first().content
+    val responseContent = model.generateContent(prompt)
+        .candidates
+        .first()
+        .content
 
     var generatedImageAsBitmap: Bitmap? = null
     var text: String? = null
@@ -66,15 +67,9 @@ suspend fun geminiImageGenAndText(prompt: String): Pair<Bitmap?, String?> {
 
 suspend fun editImage(
     prompt: String,
-    bitmap: Bitmap
+    bitmap: Bitmap,
+    model: GenerativeModel = generatorModel()
 ): Bitmap {
-
-    val model = Firebase.ai(backend = GenerativeBackend.googleAI()).generativeModel(
-        modelName = "gemini-2.0-flash-preview-image-generation",
-        generationConfig = generationConfig {
-            responseModalities = listOf(ResponseModality.TEXT, ResponseModality.IMAGE)
-        }
-    )
 
     val promptContext = content {
         image(bitmap)
