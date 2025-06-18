@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.google.firebase.Firebase
 import com.google.firebase.ai.GenerativeModel
 import com.google.firebase.ai.ai
+import com.google.firebase.ai.type.GenerateContentResponse
 import com.google.firebase.ai.type.GenerativeBackend
 import com.google.firebase.ai.type.ImagePart
 import com.google.firebase.ai.type.ImagenGenerationConfig
@@ -85,6 +86,14 @@ suspend fun editImage(
 
     return generatedImageAsBitmap
 }
+
+
+val GenerateContentResponse.image: Bitmap
+    get() {
+        val imagePart = candidates.first().content.parts.filterIsInstance<ImagePart>()
+            .firstOrNull() ?: error("No image part found")
+        return imagePart.image
+    }
 
 /**
  * Imagen API is only accessible to billed users at this time.

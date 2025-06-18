@@ -27,9 +27,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -56,9 +59,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun ChatScreen(
@@ -66,11 +72,12 @@ fun ChatScreen(
     modifier: Modifier = Modifier,
     viewModel: ChatViewModel = ChatViewModel()
 ) {
-    val messageText by viewModel.messageText.collectAsState()
-    val messages by viewModel.messages.collectAsState()
+    val messageText by viewModel.messageText.collectAsStateWithLifecycle()
+    val messages by viewModel.messages.collectAsStateWithLifecycle()
     val selectedImageToSend by viewModel.selectedImageToSend.collectAsState()
 
     val context = LocalContext.current
+
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
@@ -119,10 +126,7 @@ private fun MessagesList(
     val listState = rememberLazyListState()
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
-            listState.animateScrollToItem(
-                index = messages.size - 1,
-                scrollOffset = 0 // Ensures scroll to very bottom
-            )
+            listState.scrollToVeryBottom(messages)
         }
     }
 
@@ -142,12 +146,22 @@ private fun MessagesList(
     }
 }
 
+private suspend fun LazyListState.scrollToVeryBottom(
+    messages: List<Message>
+) {
+    animateScrollToItem(
+        index = messages.size - 1,
+        scrollOffset = 0
+    )
+}
+
 @Composable
 private fun InputSection(
     photoPickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>,
     messageText: String,
     viewModel: ChatViewModel
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -180,6 +194,15 @@ private fun InputSection(
                 focusedContainerColor = Color(0xFF2A2A2A),
                 unfocusedTextColor = Color.White,
                 focusedTextColor = Color.White
+            ),
+            keyboardActions = KeyboardActions(
+                onSend = {
+                    viewModel.sendMessage()
+                    keyboardController?.hide()
+                }
+            ),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Send
             )
         )
 
