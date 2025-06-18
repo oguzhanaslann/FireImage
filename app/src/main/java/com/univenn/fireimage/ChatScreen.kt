@@ -78,9 +78,7 @@ fun ChatScreen(
 
     val context = LocalContext.current
 
-    val photoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri: Uri? ->
+    val photoPickerLauncher = rememberImagePickLauncher { uri: Uri? ->
         uri?.let {
             val url = it.toString()
             loadAsBitmap(url, context) { bitmap ->
@@ -88,7 +86,6 @@ fun ChatScreen(
             }
         }
     }
-
 
     LaunchedEffect(Unit) {
         viewModel.startChat()
