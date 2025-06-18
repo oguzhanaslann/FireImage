@@ -1,4 +1,4 @@
-package com.univenn.fireimage
+package com.univenn.fireimage.screens.image_generation
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -9,6 +9,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.univenn.fireimage.screens.create.CreateScreen
+import com.univenn.fireimage.models.CreateScreenCallbacks
+import com.univenn.fireimage.models.CreateScreenUiState
+import com.univenn.fireimage.utils.loadAsBitmap
+import com.univenn.fireimage.utils.rememberImagePickLauncher
 
 @Composable
 fun ImageGenerationScreen(
@@ -28,12 +33,14 @@ fun ImageGenerationScreen(
         }
     }
 
-    CreateScreen(
-        modifier = modifier,
+    val createScreenState = CreateScreenUiState(
         prompt = uiState.prompt,
         image = uiState.bitmap,
         isLoading = uiState.isLoading,
-        isEditing = uiState.isEditing,
+        isEditing = uiState.isEditing
+    )
+
+    val createScreenCallbacks = CreateScreenCallbacks(
         onPromptChange = { viewModel.setPrompt(it) },
         onSend = {
             if (uiState.isEditing) {
@@ -50,4 +57,10 @@ fun ImageGenerationScreen(
         },
         onChatClicked = onChatClicked
     )
-}
+
+    CreateScreen(
+        modifier = modifier,
+        uiState = createScreenState,
+        callbacks = createScreenCallbacks
+    )
+} 
