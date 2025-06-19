@@ -1,7 +1,7 @@
 package com.univenn.fireimage.screens.image_generation
 
 import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -9,10 +9,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.univenn.fireimage.screens.create.CreateScreen
+import com.univenn.fireimage.utils.loadAsBitmap
 import com.univenn.fireimage.models.CreateScreenCallbacks
 import com.univenn.fireimage.models.CreateScreenUiState
-import com.univenn.fireimage.utils.loadAsBitmap
+import com.univenn.fireimage.models.ImageGenerationUiState
 import com.univenn.fireimage.utils.rememberImagePickLauncher
 
 @Composable
@@ -33,13 +33,31 @@ fun ImageGenerationScreen(
         }
     }
 
-    val createScreenState = CreateScreenUiState(
-        prompt = uiState.prompt,
-        image = uiState.bitmap,
-        isLoading = uiState.isLoading,
-        isEditing = uiState.isEditing
-    )
+    val createScreenCallbacks = getCreateScreenCallbacks(viewModel, uiState, photoPickerLauncher, onChatClicked)
 
+    CreateScreen(
+        modifier = modifier,
+        uiState = uiState.toCreateScreenUiState(),
+        callbacks = createScreenCallbacks
+    )
+}
+
+fun ImageGenerationUiState.toCreateScreenUiState(): CreateScreenUiState {
+    return CreateScreenUiState(
+        prompt = prompt,
+        image = bitmap,
+        isLoading = isLoading,
+        isEditing = isEditing
+    )
+}
+
+@Composable
+private fun getCreateScreenCallbacks(
+    viewModel: ImageGenerationViewModel,
+    uiState: ImageGenerationUiState,
+    photoPickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>,
+    onChatClicked: () -> Unit
+): CreateScreenCallbacks {
     val createScreenCallbacks = CreateScreenCallbacks(
         onPromptChange = { viewModel.setPrompt(it) },
         onSend = {
@@ -57,10 +75,5 @@ fun ImageGenerationScreen(
         },
         onChatClicked = onChatClicked
     )
-
-    CreateScreen(
-        modifier = modifier,
-        uiState = createScreenState,
-        callbacks = createScreenCallbacks
-    )
-} 
+    return createScreenCallbacks
+}

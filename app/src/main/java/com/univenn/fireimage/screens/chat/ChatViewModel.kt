@@ -1,43 +1,95 @@
 package com.univenn.fireimage.screens.chat
 
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.ai.Chat
+import com.google.firebase.ai.type.content
 import com.univenn.fireimage.models.Message
+import com.univenn.fireimage.utils.generatorModel
+import com.univenn.fireimage.utils.image
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ChatViewModel : ViewModel() {
-    private val _messages = MutableStateFlow<List<Message>>(emptyList())
-    val messages: StateFlow<List<Message>> = _messages.asStateFlow()
 
-    private val _selectedImage = MutableStateFlow<String?>(null)
-    val selectedImage: StateFlow<String?> = _selectedImage.asStateFlow()
-
-    fun sendMessage(text: String) {
-        viewModelScope.launch {
-            val message = Message(
-                text = text,
-                isFromMe = true,
-                imageUrl = _selectedImage.value
-            )
-            _messages.value = _messages.value + message
-
-            // Clear selected image after sending
-            _selectedImage.value = null
-
-            // Simulate response after 1 second
-            kotlinx.coroutines.delay(1000)
-            val response = Message(
-                text = "I received your message: $text",
+    private val _messages = MutableStateFlow(
+        listOf(
+            Message(
+                "Hi! I'm your AI image generation assistant. I can help you create, edit, and transform images based on your descriptions. What would you like to create today?",
                 isFromMe = false
+            ),
+        )
+    )
+    val messages: StateFlow<List<Message>> = _messages
+
+
+    private val _messageText = MutableStateFlow("")
+    val messageText: StateFlow<String> = _messageText.asStateFlow()
+
+    private val _selectedImageToSend = MutableStateFlow<Bitmap?>(null)
+    val selectedImageToSend: StateFlow<Bitmap?> = _selectedImageToSend.asStateFlow()
+
+    private var chat: Chat? = null
+
+    fun setMessageText(text: String) {
+        _messageText.value = text
+    }
+
+    fun setSelectedImage(bitmap: Bitmap?) {
+        _selectedImageToSend.value = bitmap
+    }
+
+    fun sendMessage() {
+        val chat = chat ?: return
+
+        val prompt = messageText.value.takeUnless { it.isEmpty() } ?: return
+        val image = selectedImageToSend.value
+        viewModelScope.launch {
+
+            _messages.value += Message(
+                text = prompt,
+                isFromMe = true,
+                bitmap = image
             )
-            _messages.value = _messages.value + response
+            clearMessageText()
+            _selectedImageToSend.value = null
+
+            val response = chat.sendMessage(
+                content {
+                    image?.let(::image)
+                    text(prompt)
+                }
+            )
+
+            _messages.value += Message(
+                text = response.text.toString().trim(),
+                isFromMe = false,
+                bitmap = response.image
+            )
         }
     }
 
-    fun setSelectedImage(url: String?) {
-        _selectedImage.value = url
+    private fun clearMessageText() {
+        _messageText.value = ""
+    }
+
+    fun startChat() {
+        val model = generatorModel()
+        chat = model.startChat(
+            history = _messages.value.map {
+                content(chatRole(it)) {
+                    it.bitmap?.let(::image)
+                    text(it.text)
+                }
+            }
+        )
+    }
+
+    private fun chatRole(it: Message) = when {
+        it.isFromMe -> "user"
+        else -> "model"
     }
 } 

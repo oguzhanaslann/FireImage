@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">FireImage</string>
+    <string name="create">Create</string>
+    <string name="chat_section">Chat Section</string>
+    <string name="upload">Upload</string>
+    <string name="enter_a_prompt">Enter a prompt</string>
+    <string name="send">Send</string>
+    <string name="edit_image">Edit image</string>
+    <string name="generated_image">Generated image</string>
+    <string name="add_image">Add Image</string>
+    <string name="type_a_message">Type a message...</string>
+    <string name="selected_image">Selected Image</string>
+    <string name="remove_image">Remove Image</string>
+    <string name="chat">Chat</string>
+    <string name="back">Back</string>
+    <string name="message_image">Message Image</string>
 </resources>
