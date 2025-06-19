@@ -88,11 +88,11 @@ suspend fun editImage(
 }
 
 
-val GenerateContentResponse.image: Bitmap
+val GenerateContentResponse.image: Bitmap?
     get() {
         val imagePart = candidates.first().content.parts.filterIsInstance<ImagePart>()
-            .firstOrNull() ?: error("No image part found")
-        return imagePart.image
+            .firstOrNull()
+        return imagePart?.image
     }
 
 /**

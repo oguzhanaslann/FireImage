@@ -179,7 +179,7 @@ private fun InputSection(
             Icon(
                 painter = painterResource(R.drawable.baseline_photo_camera_24),
                 contentDescription = stringResource(R.string.add_image),
-                tint = Color.White
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
 
@@ -189,12 +189,12 @@ private fun InputSection(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 8.dp),
-            placeholder = { Text(stringResource(R.string.type_a_message), color = Color.Gray) },
+            placeholder = { Text(stringResource(R.string.type_a_message), color = MaterialTheme.colorScheme.onSurfaceVariant) },
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color(0xFF2A2A2A),
-                focusedContainerColor = Color(0xFF2A2A2A),
-                unfocusedTextColor = Color.White,
-                focusedTextColor = Color.White
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                focusedTextColor = MaterialTheme.colorScheme.onBackground
             ),
             onSend = { viewModel.sendMessage() }
         )
@@ -205,7 +205,7 @@ private fun InputSection(
             Icon(
                 imageVector = Icons.Default.Send,
                 contentDescription = "Send",
-                tint = Color.White
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -229,7 +229,7 @@ private fun ColumnScope.InsertedImage(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 8.dp)
-                .background(Color(0xFF2A2A2A), RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(12.dp))
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -246,7 +246,7 @@ private fun ColumnScope.InsertedImage(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = stringResource(R.string.selected_image),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.weight(1f)
             )
             IconButton(
@@ -255,7 +255,7 @@ private fun ColumnScope.InsertedImage(
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = stringResource(R.string.remove_image),
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
         }
@@ -274,7 +274,7 @@ private fun TopBar(
             Text(
                 stringResource(R.string.chat),
                 style = MaterialTheme.typography.headlineMedium,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
         },
         navigationIcon = {
@@ -282,14 +282,14 @@ private fun TopBar(
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = stringResource(R.string.back),
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
-            titleContentColor = Color.White,
-            navigationIconContentColor = Color.White
+            titleContentColor = MaterialTheme.colorScheme.onBackground,
+            navigationIconContentColor = MaterialTheme.colorScheme.onBackground
         ),
     )
 }
@@ -307,7 +307,7 @@ fun MessageBubble(
         Box(
             modifier = Modifier
                 .background(
-                    color = if (message.isFromMe) Color(0xFF2196F3) else Color(0xFF424242),
+                    color = if (message.isFromMe) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer,
                     shape = RoundedCornerShape(
                         topStart = 12.dp,
                         topEnd = 12.dp,
@@ -339,7 +339,7 @@ fun MessageBubble(
                     ?.let {
                         Text(
                             text = message.text,
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     }
 

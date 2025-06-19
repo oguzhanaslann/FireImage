@@ -102,8 +102,8 @@ private fun TopBar(
         title = { Text(stringResource(R.string.create), style = MaterialTheme.typography.headlineMedium) },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
-            titleContentColor = Color.White,
-            navigationIconContentColor = Color.White
+            titleContentColor = MaterialTheme.colorScheme.onBackground,
+            navigationIconContentColor = MaterialTheme.colorScheme.onBackground
         ),
         actions = {
             AnimatedVisibility(visible = canAddPhoto) {
@@ -116,7 +116,7 @@ private fun TopBar(
                Icon(
                    painter = painterResource(R.drawable.baseline_chat_bubble_outline_24),
                    contentDescription = stringResource(R.string.chat_section),
-                   tint = Color.White
+                   tint = MaterialTheme.colorScheme.onBackground
                )
            }
         }
@@ -129,7 +129,7 @@ private fun AddPhotoButton(onAddPhotoClicked: () -> Unit) {
         Icon(
             painter = painterResource(R.drawable.baseline_upload_24),
             contentDescription = stringResource(R.string.upload),
-            tint = Color.White
+            tint = MaterialTheme.colorScheme.onBackground
         )
     }
 }
@@ -149,8 +149,8 @@ private fun GeneratedImageSection(
             .fillMaxWidth()
             .aspectRatio(1f)
             .clip(shape)
-            .background(Color.Gray)
-            .border(1.dp, Color.White, shape),
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .border(1.dp, MaterialTheme.colorScheme.onBackground, shape),
         contentAlignment = Alignment.Center
     ) {
         image?.let {
@@ -192,7 +192,7 @@ private fun AddPhotoIcon(onAddPhotoClicked: () -> Unit) {
             .sizeIn(minWidth = 64.dp, minHeight = 64.dp),
         painter = painterResource(id = R.drawable.baseline_add_photo_alternate_24),
         contentDescription = stringResource(R.string.add_image),
-        tint = Color.White
+        tint = MaterialTheme.colorScheme.onBackground
     )
 }
 
@@ -206,12 +206,12 @@ private fun EditButton(
         onClick = onEditClick,
         modifier = modifier
             .size(40.dp)
-            .background(Color(0xFF1A1A1A).copy(alpha = 0.7f), CircleShape)
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f), CircleShape)
             .then(
                 if (isEditing) {
                     Modifier.border(
                         width = 2.dp,
-                        color = Color(0xFF0088FF),
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         shape = CircleShape
                     )
                 } else {
@@ -223,7 +223,7 @@ private fun EditButton(
         Icon(
             imageVector = Icons.Default.Edit,
             contentDescription = stringResource(R.string.edit_image),
-            tint = if (isEditing) Color(0xFF0088FF) else Color.White
+            tint = if (isEditing) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.onBackground
         )
     }
 }
@@ -245,15 +245,15 @@ private fun InputSection(
             placeholder = {
                 Text(
                     stringResource(R.string.enter_a_prompt),
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             },
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = Color(0xFF5A5A5A),
-                focusedBorderColor = Color(0xFF5A5A5A),
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedContainerColor = MaterialTheme.colorScheme.background,
                 focusedContainerColor = MaterialTheme.colorScheme.background
             ),
