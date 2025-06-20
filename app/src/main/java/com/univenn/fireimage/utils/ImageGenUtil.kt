@@ -70,7 +70,7 @@ suspend fun editImage(
     prompt: String,
     bitmap: Bitmap,
     model: GenerativeModel = generatorModel()
-): Bitmap {
+): Bitmap? {
 
     val promptContext = content {
         image(bitmap)
@@ -78,22 +78,52 @@ suspend fun editImage(
     }
 
     val generatedImageAsBitmap = model.generateContent(promptContext)
-        .candidates
-        .first()
-        .content
-        .parts
-        .firstNotNullOf { it.asImageOrNull() }
+    generatedImageAsBitmap.text
+    return generatedImageAsBitmap.image
+}
 
-    return generatedImageAsBitmap
+suspend fun geminiImageGen(
+    prompt: String,
+    image: Bitmap?,
+    model: GenerativeModel = generatorModel()
+): Bitmap? {
+    val promptContext = content {
+        image?.let(::image)
+        text(prompt)
+    }
+
+    val generatedImageAsBitmap = model.generateContent(promptContext)
+    return generatedImageAsBitmap.image
 }
 
 
 val GenerateContentResponse.image: Bitmap?
     get() {
-        val imagePart = candidates.first().content.parts.filterIsInstance<ImagePart>()
+        val imagePart = candidates
             .firstOrNull()
+            ?.content
+            ?.parts
+            ?.filterIsInstance<ImagePart>()
+            ?.firstOrNull()
         return imagePart?.image
     }
+
+
+suspend fun geminiImageGenAndText(
+    prompt: String,
+    image: Bitmap?,
+    model: GenerativeModel = generatorModel()
+): Pair<Bitmap?, String?> {
+
+    val promptContext = content {
+        image?.let(::image)
+        text(prompt)
+    }
+
+    val responseContent = model.generateContent(promptContext)
+    return responseContent.image to responseContent.text
+}
+
 
 /**
  * Imagen API is only accessible to billed users at this time.

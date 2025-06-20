@@ -158,7 +158,7 @@ private fun GeneratedImageSection(
                 bitmap = it.asImageBitmap(),
                 contentDescription = stringResource(R.string.generated_image),
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Fit
             )
 
             EditButton(

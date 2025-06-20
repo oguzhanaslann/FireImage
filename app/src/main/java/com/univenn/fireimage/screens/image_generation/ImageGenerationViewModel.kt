@@ -48,7 +48,7 @@ class ImageGenerationViewModel: ViewModel() {
         
         viewModelScope.launch {
             _uiState.value = currentState.loading()
-            val editedBitmap = com.univenn.fireimage.utils.editImage(prompt, bitmap)
+            val editedBitmap = com.univenn.fireimage.utils.editImage(prompt, bitmap) ?: return@launch
             _uiState.value = currentState
                 .withBitmap(editedBitmap)
                 .promptCleared()
