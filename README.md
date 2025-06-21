@@ -9,22 +9,22 @@ FireImage is a cutting-edge Android application that harnesses the power of Goog
 ### 🖼️ Text-to-Image Generation
 Create stunning, high-quality images from simple text prompts using Google's Gemini 2.0 Flash image generation models.
 
-![Text to Image Generation](gifs/prompt_to_img.gif)
+<img src="gifs/prompt_to_img.gif" alt="Text to Image Generation" width="300"/>
 
 ### 🎨 Image-to-Image Editing  
 Transform and enhance existing images with AI-powered modifications using natural language prompts.
 
-![Image to Image Editing](gifs/image_to_image.gif)
+<img src="gifs/image_to_image.gif" alt="Image to Image Editing" width="300"/>
 
 ### 💬 Intelligent AI Chat
 Engage with Gemini AI in dynamic conversations about images, get creative suggestions, and receive AI assistance.
 
-![Chat with Superman Generation](gifs/chat_superman_gen.gif)
+<img src="gifs/chat_superman_gen.gif" alt="Chat with Superman Generation" width="300"/>
 
 ### ✏️ Chat-Based Image Editing
 Edit and refine images through conversational interactions with the AI assistant.
 
-![Chat Image Editing](gifs/chat_image_edit.gif)
+<img src="gifs/chat_image_edit.gif" alt="Chat Image Editing" width="300"/>
 
 ## 🛠️ Technology Stack
 
