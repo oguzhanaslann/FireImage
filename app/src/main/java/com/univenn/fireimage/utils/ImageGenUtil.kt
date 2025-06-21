@@ -36,11 +36,18 @@ suspend fun geminiImageGen(
     return generatedImageAsBitmap
 }
 
-fun generatorModel(): GenerativeModel = Firebase.ai(backend = GenerativeBackend.googleAI()).generativeModel(
+fun generatorModel(
+    systemInstructions: String? = null
+): GenerativeModel = Firebase.ai(backend = GenerativeBackend.googleAI()).generativeModel(
     modelName = "gemini-2.0-flash-preview-image-generation",
     // Configure the model to respond with text and images
     generationConfig = generationConfig {
         responseModalities = listOf(ResponseModality.TEXT, ResponseModality.IMAGE)
+    },
+    systemInstruction = systemInstructions?.let {
+        content {
+            text(systemInstructions)
+        }
     }
 )
 
